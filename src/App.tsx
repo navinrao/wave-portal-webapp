@@ -2,14 +2,38 @@ import React, {useState, useEffect} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { ethers } from 'ethers';
-import { ExternalProvider } from "@ethersproject/providers";
 import abi from './utils/WavePortal.json';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import SwitchUnstyled, { switchUnstyledClasses } from '@mui/base/SwitchUnstyled';
+import { styled } from '@mui/material/styles';
+
+const StyledButton = styled('span')(`
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+  border: 0;
+  border-radius: 5px;
+`);
 
 const { ethereum } = window;
 
+type Wave = {
+  "message" : string,
+  "address" : string,
+  "timestamp" : number
+}
+
+type FormattedWave = {
+  "message" : string,
+  "address" : string,
+  "timestamp" : Date
+}
+
 function App() {
   const [currentAccount, setCurrentAccount] = useState("");
-  const contractAddress = "0xb046Ce21Ae9E7689b3aA676fD3cF07CF75Bb149f"
+  const [waveObjects, setWaveObjects] = useState([]);
+  const contractAddress: string = "0x8edF9695877cE5bE0B264D9d3636d4BdA8358201"; // old address: 0xb046Ce21Ae9E7689b3aA676fD3cF07CF75Bb149f
   const contractABI = abi.abi;
 
   const getMetaMaskAccount = async (method: any) => {
@@ -53,12 +77,22 @@ function App() {
         * Execute the actual wave from your smart contract
         */
         
-        const waveTxn = await wavePortalContract.wave();
+        const waveTxn = await wavePortalContract.wave("Hey Navdev, nice WavePortal!");
         console.log("Mining...", waveTxn.hash);
         await waveTxn.wait();
-        console.log("Mined...", waveTxn.hash);    
+        console.log("Mined...", waveTxn.hash);
         count = await wavePortalContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());        
+        console.log("Retrieved total wave count...", count.toNumber());
+        const waves: Array<Wave> = wavePortalContract.getWaves(); // append to this and retrieve all waves once in useEffect
+        let formattedWaves: Array<FormattedWave>;
+        waves.forEach(wave => {
+          formattedWaves.push({
+            address: wave.address,
+            timestamp: new Date(wave.timestamp * 1000),
+            message: wave.message
+          })
+        setWaveObjects(formattedWaves);
+        });
       }
       else {
         alert("Please connect your wallet first. If you don't have Metamask, then download it.");
@@ -70,7 +104,7 @@ function App() {
     }
   }
   useEffect(() => {
-    getMetaMaskAccount({method: "eth_accounts"}).then((account) => {
+    getMetaMaskAccount({method: "eth_accounts"}).then((account: string) => {
       if (account != null) {
         setCurrentAccount(account);
       }
@@ -87,18 +121,27 @@ function App() {
         </div>
 
         <div className="bio">
-        This webapp was built by Farza 
+        Connect your virtual wallet, click the "Wave at Me" button to interact with a smart contract that will keep track of how many people have waved! 
         </div>
-
-        {!currentAccount && (
-          <button className="waveButton" onClick={getMetaMaskAccount}>
-            Connect Wallet
-          </button>
-        )}   
-
-        <button className="waveButton" onClick={wave}>
-          Wave at Me
-        </button>
+      <Tooltip title="Connect Metamask Wallet">
+        <div className='waveButton'>
+          {!currentAccount && (
+            <Button variant='contained' color="success" className="waveButton" onClick={getMetaMaskAccount} sx={{
+            margin: "16px",
+            }}>Connect Wallet</Button>  
+          )}
+        </div>
+      </Tooltip>
+{/* TODO: Fix formatting here so that the button width is the same as the width of the Text div above it */}
+      <Tooltip title="Interact with smart contract">
+      <div className='waveButton'>
+          {!currentAccount && (
+            <Button variant='contained' color="success" className="waveButton" onClick={wave} sx={{
+            margin: "16px",
+            }}>Wave at Me!</Button>  
+            )}
+        </div>
+      </Tooltip>        
      
       </div>
     </div>
