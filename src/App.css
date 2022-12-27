@@ -1,49 +1,77 @@
-body { 
-  background-color: black; 
+body {
+  background-color: black;
 }
 .mainContainer {
-display: flex;
-justify-content: center;
-width: 100%;
-margin-top: 64px;
-background-color: #000000
-
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-top: 64px;
+  background-color: #000000;
 }
 
 .dataContainer {
-display: flex;
-flex-direction: column;
-justify-content: center;
-max-width: 600px;
-color: white
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
+}
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 2rem;
+}
+/* .break allows me to break to a new row using Flexbox */
+.columnContainer {
+  display: flex;
+  flex-direction: column;
+}
+.textField {
+  background-color: white;
+  padding-bottom: 18px;
 }
 
 .header {
-text-align: center;
-font-size: 32px;
-font-weight: 600;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
 }
 
 .bio {
-text-align: center;
-color: white;
-margin-top: 16px;
+  text-align: center;
+  color: white;
+  margin-top: 16px;
 }
 
-.waveButton {
-cursor: pointer;
-margin-top: 16px;
-padding: 8px;
-border: 0;
-border-radius: 5px;
+.waveButtons {
+  cursor: pointer;
+  padding: 8px;
+  border: 0;
+  border-radius: 5px;
+  background-color: green;
+  color: white;
+  height: fit-content;
+}
 
+.waveButtons:hover {
+  opacity: 0.7;
+  transition-duration: 0.3s;
+}
+
+#connectWalletButton {
+  align-items: center;
+}
+
+.tableColors {
+  color: white;
+  background-color: black;
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
-    width: 300px;
-    height: auto;    
-    text-align: left;    
+    width: 150px;
+    height: auto;
+    text-align: left;
   }
 }
 
@@ -69,4 +97,35 @@ border-radius: 5px;
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.waveButtons:hover {
+  animation: effect .5s infinite;
+}
+
+@keyframes effect {
+    0% {
+        transform: translateX(0px) rotate(0deg);
+    }
+
+    20% {
+        transform: translateX(-3px) rotate(-3deg);
+    }
+
+    40% {
+        transform: translateX(-2px) rotate(-2deg);
+    }
+
+    60% {
+        transform: translateX(3px) rotate(3deg);
+    }
+
+    80% {
+        transform: translateX(2px) rotate(2deg);
+    }
+
+    100% {
+        transform: translateX(0px) rotate(0deg);
+    }
 }
